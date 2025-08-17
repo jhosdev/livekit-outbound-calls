@@ -18,7 +18,7 @@ license = "MIT"
 requires-python = ">=3.13"
 dependencies = [
     "attrs>=25.3.0",
-    "livekit-agents[cartesia,deepgram,google,silero,turn-detector]~=1.0",
+    "livekit-agents[cartesia,deepgram,google,mcp,openai,silero,turn-detector]~=1.0",
     "livekit-plugins-noise-cancellation~=0.2.1",
 ]
 

@@ -17,7 +17,7 @@ from livekit.plugins import cartesia, deepgram, google, noise_cancellation
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 from agents.starter.agent import StarterAgent, prewarm
-from agents.starter.config import get_output_path
+from agents.starter.config import get_output_path, session_config
 from agents.starter.models import ModelMetadata, UserData
 
 logger = logging.getLogger(__name__)
@@ -28,17 +28,23 @@ async def entrypoint(ctx: JobContext):
         "room": ctx.room.name,
     }
     metadata_json = ctx.job.metadata
-
+    print(ctx.job)
     logger.info(f"Received metadata: {metadata_json}")
 
     try:
         logger.debug("Parsing job metadata")
+        print(metadata_json)
         metadata: ModelMetadata | None = loads(metadata_json)
     except JSONDecodeError:
         logger.warning("Failed to parse job metadata, using empty metadata")
         metadata = None
 
+    # Set up a voice AI pipeline using OpenAI, Cartesia, Deepgram, and the LiveKit turn detector
     session: AgentSession[UserData] = AgentSession(
+        # any combination of STT, LLM, TTS, or realtime API can be used
+        llm=google.LLM(model=session_config.llm),
+        stt=deepgram.STT(model=session_config.stt, language=session_config.stt_language),
+        tts=cartesia.TTS(voice=session_config.tts),
         # use LiveKit's turn detection model
         turn_detection=MultilingualModel(),
         vad=ctx.proc.userdata["vad"],

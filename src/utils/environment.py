@@ -42,7 +42,12 @@ class Config:
         factory=lambda: os.getenv("DEEPGRAM_API_KEY", ""), metadata={"required": True}
     )
 
-    # Google - AI Language Model
+    # OpenAI - Language Model
+    openai_api_key: str = attrs.field(
+        factory=lambda: os.getenv("OPENAI_API_KEY", ""), metadata={"required": True}
+    )
+
+    # Google - Language Model
     google_api_key: str = attrs.field(
         factory=lambda: os.getenv("GOOGLE_API_KEY", ""), metadata={"required": True}
     )
@@ -59,6 +64,27 @@ class Config:
     phone_number: str = attrs.field(
         factory=lambda: os.getenv("PHONE_NUMBER", ""), metadata={"required": True}
     )
+
+    # MCP Server
+    mcp_server_url:str = attrs.field(
+        factory=lambda: os.getenv("MCP_URL", ""), metadata={"required": True}
+    )
+    mcp_server_header:str = attrs.field(
+        factory=lambda: os.getenv("MCP_HEADER", ""), metadata={"required": True}
+    )
+    mcp_server_token:str = attrs.field(
+        factory=lambda: os.getenv("MCP_TOKEN", ""), metadata={"required": True}
+    )
+
+    # Typesense - Search
+    typesense_url: str = attrs.field(
+        factory=lambda: os.getenv("TYPESENSE_URL", ""), metadata={"required": True}
+    )
+    typesense_api_key: str = attrs.field(
+        factory=lambda: os.getenv("TYPESENSE_API_KEY", ""), metadata={"required": True}
+    )
+
+    # Postgres - Database
 
     def __attrs_post_init__(self) -> None:
         """Validate required configuration after initialization."""

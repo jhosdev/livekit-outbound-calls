@@ -1,21 +1,25 @@
-from shared.config import AgentConfig, AgentSession
+from livekit.agents import mcp
+from livekit.plugins import cartesia, deepgram, google
 
-session_config = AgentSession(
-    llm="gemini-2.5-flash-preview-05-20",
-    stt="nova-3",
-    tts="12717d4c-6831-4b91-a0ab-e99d51755b10",
-    stt_language="multi",
+from utils.environment import get_config
+
+config = get_config()
+config.check_required_env_vars()
+
+agent_name = "lyra"
+agent_instructions = """
+You are a helpful voice AI assistant.
+"""
+
+agent_llm = google.LLM(model="gemini-2.5-flash-preview-05-20")
+agent_stt = deepgram.STT(model="nova-3", language="multi")
+agent_tts = cartesia.TTS(voice="12717d4c-6831-4b91-a0ab-e99d51755b10")
+
+agent_mcp_server = mcp.MCPServerHTTP(
+    url=config.mcp_server_url,
+    headers={
+        config.mcp_server_header: config.mcp_server_token,
+    },
+    timeout=10,
+    client_session_timeout_seconds=10,
 )
-
-agent_config= AgentConfig(
-    instructions="""
-    You are a helpful voice AI assistant.
-    You eagerly assist users with their questions by providing information from your extensive knowledge.
-    Your responses are concise, to the point, and without any complex formatting or punctuation.
-    You are curious, friendly, and have a sense of humor.
-    You talk in spanish.
-    You assist users with programming questions
-    """
-)
-
-agent_name = "base-agent"
